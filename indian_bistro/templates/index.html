@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Bistro | Delicious Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1 class="title">Spice Route</h1>
+        <p class="subtitle">Experience the authentic taste of India</p>
+    </header>
+
+    <div class="container">
+        <!-- Main Menu Section -->
+        <main class="menu-section">
+            <h2>Our Menu</h2>
+            <div class="menu-grid">
+                {% for item in menu %}
+                <div class="menu-item">
+                    <div class="item-info">
+                        <h3>{{ item.name }}</h3>
+                        <p class="item-price">₹{{ item.price }}</p>
+                    </div>
+                    <button class="btn-add" onclick="addToCart('{{ item.name }}', {{ item.price }})">
+                        Add to Cart
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+
+        <!-- Cart Section -->
+        <aside class="cart-section">
+            <h2>Your Cart</h2>
+            <div id="cart-container">
+                <div class="empty-cart-msg">Your cart is empty</div>
+            </div>
+
+            <div class="bill-summary" id="bill-summary" style="display: none;">
+                <div class="bill-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">₹0.00</span>
+                </div>
+                <div class="bill-row">
+                    <span>GST (5%)</span>
+                    <span id="gst">₹0.00</span>
+                </div>
+                <div class="bill-row bill-total">
+                    <span>Grand Total</span>
+                    <span id="total">₹0.00</span>
+                </div>
+            </div>
+
+            <!-- Checkout Form -->
+            <div class="checkout-form" id="checkout-form" style="display: none;">
+                <h3>Checkout Details</h3>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="cust-name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label>Table Number</label>
+                    <input type="number" id="cust-table" placeholder="Table #" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="cust-phone" placeholder="10-digit mobile" required>
+                </div>
+                <button class="btn-pay" onclick="placeOrder()">Place Order & Pay</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Notification system -->
+    <div id="notification" class="notification">
+        Order placed successfully!
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
