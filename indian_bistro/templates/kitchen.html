@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitchen Display | Spice Route</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="kitchen-body">
+
+    <header>
+        <h1 class="title">Kitchen Dashboard</h1>
+        <p class="subtitle">Live Order Tracking</p>
+    </header>
+
+    <div class="container full-width">
+        <div class="order-board" id="order-board">
+            {% if not orders %}
+            <div class="no-orders">
+                <p>No active orders at the moment.</p>
+            </div>
+            {% else %}
+                {% for order in orders %}
+                <div class="order-card {{ order.status.lower() }}" id="order-{{ order.id }}">
+                    <div class="order-header">
+                        <span class="order-id">#{{ order.id }}</span>
+                        <span class="order-time">{{ order.timestamp }}</span>
+                    </div>
+                    <div class="order-customer">
+                        <strong>{{ order.customer_name }}</strong> (Table {{ order.table_number }})
+                    </div>
+                    <div class="order-items">
+                        <ul>
+                            {% for item in order.order_items %}
+                            <li>{{ item.quantity }}x {{ item.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="order-footer">
+                        <select onchange="updateStatus('{{ order.id }}', this.value)">
+                            <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Cooking" {% if order.status == 'Cooking' %}selected{% endif %}>Cooking</option>
+                            <option value="Ready" {% if order.status == 'Ready' %}selected{% endif %}>Ready</option>
+                            <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                        <span class="status-badge">{{ order.status }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(orderId, newStatus) {
+            fetch('/api/update-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    status: newStatus
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Refresh to show updated status
+                } else {
+                    alert('Error updating status: ' + data.message);
+                }
+            });
+        }
+
+        // Auto refresh every 30 seconds
+        setInterval(() => {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>
