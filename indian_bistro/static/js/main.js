@@ -136,6 +136,10 @@ async function placeOrder() {
         
         if (result.success) {
             showNotification(`Order #${result.order_id} placed! Kitchen is notified.`);
+            
+            // Show Bill
+            generateBill(result.order_id, name, table, cart);
+            
             // Clear cart
             cart = [];
             updateCartUI();
@@ -150,6 +154,56 @@ async function placeOrder() {
         console.error("Order Error:", error);
         alert("Failed to connect to server.");
     }
+}
+
+/**
+ * Generates and shows the bill in the modal
+ */
+function generateBill(orderId, name, table, items) {
+    document.getElementById('bill-order-id').innerText = orderId;
+    document.getElementById('bill-date').innerText = new Date().toLocaleString();
+    document.getElementById('bill-cust-name').innerText = name;
+    document.getElementById('bill-cust-table').innerText = table;
+    
+    const itemsBody = document.getElementById('bill-items-body');
+    let subtotal = 0;
+    let itemsHTML = '';
+    
+    items.forEach(item => {
+        const total = item.price * item.quantity;
+        subtotal += total;
+        itemsHTML += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>₹${item.price}</td>
+                <td>₹${total}</td>
+            </tr>
+        `;
+    });
+    
+    const gst = subtotal * 0.05;
+    const grandTotal = subtotal + gst;
+    
+    itemsBody.innerHTML = itemsHTML;
+    document.getElementById('bill-subtotal').innerText = `₹${subtotal.toFixed(2)}`;
+    document.getElementById('bill-gst').innerText = `₹${gst.toFixed(2)}`;
+    document.getElementById('bill-total').innerText = `₹${grandTotal.toFixed(2)}`;
+    
+    // Show Modal
+    document.getElementById('bill-modal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('bill-modal').style.display = 'none';
+}
+
+function printBill() {
+    const printContents = document.getElementById('bill-print-area').innerHTML;
+    const originalContents = document.body.innerHTML;
+    
+    // Create a temporary print window or style to only print the bill
+    window.print();
 }
 
 /**

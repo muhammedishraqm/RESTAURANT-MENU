@@ -81,6 +81,66 @@
         Order placed successfully!
     </div>
 
+    <!-- Bill Modal -->
+    <div id="bill-modal" class="modal">
+        <div class="modal-content bill-receipt">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="bill-print-area">
+                <div class="bill-header">
+                    <h2>SPICE ROUTE</h2>
+                    <p>Authentic Indian Cuisine</p>
+                    <p>123 Flavors Street, Foodie City</p>
+                    <p>Tel: +91 98765 43210</p>
+                </div>
+                <hr>
+                <div class="bill-info">
+                    <p><strong>Order ID:</strong> <span id="bill-order-id"></span></p>
+                    <p><strong>Date:</strong> <span id="bill-date"></span></p>
+                    <p><strong>Customer:</strong> <span id="bill-cust-name"></span></p>
+                    <p><strong>Table:</strong> <span id="bill-cust-table"></span></p>
+                </div>
+                <hr>
+                <table class="bill-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bill-items-body">
+                        <!-- Items will be injected here -->
+                    </tbody>
+                </table>
+                <hr>
+                <div class="bill-summary-final">
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <span id="bill-subtotal"></span>
+                    </div>
+                    <div class="summary-line">
+                        <span>GST (5%)</span>
+                        <span id="bill-gst"></span>
+                    </div>
+                    <div class="summary-line total-line">
+                        <span>Grand Total</span>
+                        <span id="bill-total"></span>
+                    </div>
+                </div>
+                <hr>
+                <div class="bill-footer">
+                    <p>Thank you for dining with us!</p>
+                    <p>Visit again soon</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-print" onclick="printBill()">Print Receipt</button>
+                <button class="btn-close" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
